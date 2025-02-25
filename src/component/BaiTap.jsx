@@ -1,7 +1,7 @@
 import React from "react"
 import { useState } from "react"
 function BaiTap(){
-    const [a, setA] = useState(0);
+  const [a, setA] = useState(0);
   const [b, setB] = useState(0);
   const [operator, setOperator] = useState('+');
   const [result, setResult] = useState(0);
