@@ -1,0 +1,101 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    align-items: center;
+    
+}
+.header-containner{
+    display: flex;
+    align-items: center;
+}
+ul{
+    margin-left: 50px;
+    display: flex;
+    list-style-type: none;
+    margin-right: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    align-items: center;
+    justify-content: space-between;
+    color: #000000;
+}
+li{
+    display: inline;
+
+    margin-right: 40px;
+}
+.center-container{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+#left{
+    margin-top: 50px;
+    border: 1px solid #b1afaf;
+    height: auto;
+    padding-left: 10px;
+    width: 20%;
+    margin-left: 50px;
+    border-radius: 5px;
+
+}
+#right {
+    width: 70%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+}
+
+.footer-container{
+    
+    margin-top: 50px;
+    display: flex;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    width: 100%;
+}
+#footer1, #footer2, #footer3 {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+}
+
+
+#footer1 {
+    margin-left: 50px;
+    margin-right: 50px;
+    width: 40%;
+}
+#footer2, #footer3 {
+    width: 30%;
+}
+
+/* Định dạng danh sách để hiển thị theo chiều dọc */
+#footer2 ul, #footer3 ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* Xếp các mục theo chiều dọc */
+    align-items: flex-start; /* Căn lề trái */
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+   
+}
+
+#footer2 ul li, #footer3 ul li {
+    text-align: left;   
+    margin-bottom: 8px;
+}
+
+/* Định dạng liên kết */
+ul li a {
+    text-decoration: none;
+    color: rgb(172, 171, 171);
+    font-size: 15px;
+    
+}
