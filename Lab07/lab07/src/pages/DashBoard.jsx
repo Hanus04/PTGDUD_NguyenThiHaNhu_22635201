@@ -1,27 +1,35 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
+import AddDetail from "../components/AddDetail";
+import EditDetail from "../components/EditDetail";
 
 const DashBoard = () => {
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 6;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-  const itemPerPage = 6;
+  const fetchOrderData = async () => {
+    fetch("http://localhost:3001/orders")
+      .then((response) => response.json())
+      .then((data) => setOrders(data));
+  };
+
+  const itemStatus = (status) => {
+    if (status === "New") return "text-blue-700 bg-blue-100";
+    else if (status === "In-progress") return "text-yellow-700 bg-yellow-100";
+    else return "text-green-700 bg-green-100";
+  };
 
   useEffect(() => {
-
-    fetch("/database/overview.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setOrders(data.orders || []);
-      })
-      .catch((err) => console.error("Lỗi khi tải dữ liệu:", err));
+    fetchOrderData();
   }, []);
 
   const totalPages = Math.ceil(orders.length / itemPerPage);
+
   const indexOfLastItem = currentPage * itemPerPage;
   const indexOfFirstItem = indexOfLastItem - itemPerPage;
   const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
@@ -31,12 +39,6 @@ const DashBoard = () => {
   const handleEditClick = (id) => {
     setSelectedOrderId(id);
     setEditModal(true);
-  };
-
-  const itemStatus = (status) => {
-    if (status === "New") return "text-blue-700 bg-blue-100";
-    else if (status === "In-progress") return "text-yellow-700 bg-yellow-100";
-    else return "text-green-700 bg-green-100";
   };
 
   return (
@@ -60,12 +62,13 @@ const DashBoard = () => {
           </button>
         </div>
       </div>
-
       <div className="mt-7">
         <table className="min-w-full border border-gray-300 rounded-sm border-separate">
           <thead>
             <tr className="text-gray-500">
-              <td className="p-3"><input type="checkbox" /></td>
+              <td className="p-3">
+                <input type="checkbox" />
+              </td>
               <td className="px-4 py-3 font-bold">CUSTOMER NAME</td>
               <td className="px-4 py-3 font-bold">COMPANY</td>
               <td className="px-4 py-3 font-bold">ORDER VALUE</td>
@@ -75,73 +78,74 @@ const DashBoard = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((item) => (
-              <tr key={item.id}>
-                <td className="p-3"><input type="checkbox" /></td>
+            {currentItems.map((item, index) => (
+              <tr key={index}>
+                <td className="p-3">
+                  <input type="checkbox" />
+                </td>
                 <td className="px-4 py-3 font-medium">{item.customerName}</td>
                 <td className="px-4 py-3">{item.company}</td>
                 <td className="px-4 py-3">${item.orderValue}</td>
                 <td className="px-4 py-3 text-gray-400">{item.orderDate}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2.5 py-1.5 rounded-xl text-xs font-medium ${itemStatus(item.status)}`}>
+                  <span
+                    className={`px-2.5 py-1.5 rounded-xl text-xs font-medium ${itemStatus(
+                      item.status
+                    )}`}
+                  >
                     {item.status}
                   </span>
                 </td>
                 <td className="px-4 py-3 cursor-pointer">
-                  <img onClick={() => handleEditClick(item.id)} src={"./create.png"} alt="create" />
+                  <img
+                    onClick={() => handleEditClick(item.id)}
+                    src={"./create.png"}
+                    alt="create"
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      <div className="mt-5 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p className="text-sm text-gray-600">{orders.length} results</p>
-
-        <div className="flex items-center justify-center space-x-2">
+      <div className="mt-5 flex justify-between">
+        <p className="text-sm">{orders.length} results</p>
+        <div className="flex">
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-3 py-1.5 rounded-md border transition ${currentPage === 1
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-white hover:bg-gray-100 text-gray-700"
-              }`}
+            className="px-4 py-2 text-gray-700 rounded-md cursor-pointer"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft />
           </button>
-
-          {[...Array(totalPages).keys()].map((num) => {
-            const page = num + 1;
-            return (
-              <button
-                key={page}
-                onClick={() => paginate(page)}
-                className={`px-3 py-1.5 rounded-md text-sm border transition ${currentPage === page
-                    ? "bg-[#E64F84] text-white"
-                    : "bg-white hover:bg-gray-100 text-gray-700"
-                  }`}
-              >
-                {page}
-              </button>
-            );
-          })}
-
+          <div className="flex items-center mx-2">
+            <p className="text-gray-700">
+              Page {currentPage} of {totalPages}
+            </p>
+          </div>
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-3 py-1.5 rounded-md border transition ${currentPage === totalPages
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-white hover:bg-gray-100 text-gray-700"
-              }`}
+            className="px-4 py-2 text-gray-700 rounded-md cursor-pointer"
           >
-            <ChevronRight size={18} />
+            <ChevronRight />
           </button>
         </div>
       </div>
 
+      <AddDetail
+        fetchOrderData={fetchOrderData}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
       {editModal && selectedOrderId !== null && (
-        <EditModal id={selectedOrderId} isOpen={editModal} onClose={() => setEditModal(false)} />
+        <EditDetail
+          fetchOrderData={fetchOrderData}
+          id={selectedOrderId}
+          isOpen={editModal}
+          onClose={() => setEditModal(false)}
+        />
       )}
     </div>
   );
