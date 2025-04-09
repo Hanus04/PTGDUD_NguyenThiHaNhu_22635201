@@ -1,9 +1,9 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 const DashBoard = () => {
+  const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -11,32 +11,15 @@ const DashBoard = () => {
 
   const itemPerPage = 6;
 
-  const orders = [
-    {
-      id: 1,
-      customerName: "Alice",
-      company: "Tech Co",
-      orderValue: 250,
-      orderDate: "2025-04-01",
-      status: "New",
-    },
-    {
-      id: 2,
-      customerName: "Bob",
-      company: "Creative Inc",
-      orderValue: 480,
-      orderDate: "2025-03-29",
-      status: "In-progress",
-    },
-    {
-      id: 3,
-      customerName: "Charlie",
-      company: "LogiSoft",
-      orderValue: 700,
-      orderDate: "2025-03-20",
-      status: "Completed",
-    },
-  ];
+  useEffect(() => {
+
+    fetch("/database/overview.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setOrders(data.orders || []);
+      })
+      .catch((err) => console.error("Lỗi khi tải dữ liệu:", err));
+  }, []);
 
   const totalPages = Math.ceil(orders.length / itemPerPage);
   const indexOfLastItem = currentPage * itemPerPage;
@@ -156,9 +139,6 @@ const DashBoard = () => {
           </button>
         </div>
       </div>
-
-
-
 
       {editModal && selectedOrderId !== null && (
         <EditModal id={selectedOrderId} isOpen={editModal} onClose={() => setEditModal(false)} />
