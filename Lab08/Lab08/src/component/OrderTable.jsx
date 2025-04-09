@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import EditDetail from "./EditDetail";
+import React from "react";
 
-const ordersData = [
+const orders = [
   {
     id: "1",
     customerName: "Elizabeth Lee",
@@ -50,6 +49,22 @@ const ordersData = [
     orderDate: "10/06/2023",
     status: "Completed",
   },
+  {
+    id: "7",
+    customerName: "Hà Như",
+    company: "Hanus",
+    orderValue: 13000,
+    orderDate: "13/8/2025",
+    status: "Completed",
+  },
+  {
+    id: "8",
+    customerName: "Hà Như",
+    company: "ViNa",
+    orderValue: 15000,
+    orderDate: "4/9/2025",
+    status: "New",
+  },
 ];
 
 const getStatusColor = (status) => {
@@ -66,31 +81,10 @@ const getStatusColor = (status) => {
 };
 
 const OrderTable = () => {
-  const [orders, setOrders] = useState(ordersData);
-  const [selectedId, setSelectedId] = useState(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
-  const openEdit = (id) => {
-    setSelectedId(id);
-    setIsEditOpen(true);
-  };
-
-  const closeEdit = () => {
-    setIsEditOpen(false);
-  };
-
-  const fetchOrderData = async () => {
-    const res = await fetch("http://localhost:3001/orders");
-    const data = await res.json();
-    setOrders(data);
-  };
-
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <div className="bg-white rounded-xl p-6 w-full shadow-xl">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-6">Orders Overview</h2>
-        </div>
+      <div className="bg-white rounded-xl shadow-xl p-6">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Orders Overview</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto border border-gray-200">
             <thead className="bg-gray-100">
@@ -101,7 +95,6 @@ const OrderTable = () => {
                 <th className="px-4 py-3 text-left font-medium text-gray-700">Order Value</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-700">Order Date</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Actions</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
@@ -117,27 +110,12 @@ const OrderTable = () => {
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => openEdit(order.id)}
-                      className="px-3 py-1 rounded bg-[#E64F84] text-white hover:bg-[#ff1491]"
-                    >
-                      Sửa
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
-      <EditDetail
-        id={selectedId}
-        isOpen={isEditOpen}
-        onClose={closeEdit}
-        fetchOrderData={fetchOrderData}
-      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import Header from "./component/Header";
 import Menu from "./component/Menu";
+import OrderTable from "./component/OrderTable";
 
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
       </div>
       <div>
         <Header />
+        <OrderTable/>
 
       </div>
     </div>
