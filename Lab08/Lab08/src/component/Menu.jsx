@@ -1,37 +1,31 @@
-const Menu = () => {
+const Menu = ({ activePage, setActivePage }) => {
+    const menuItems = [
+      { id: "dashboard", icon: "./Squares_four_1.png", label: "Dashboard" },
+      { id: "projects", icon: "./Folder.png", label: "Projects" },
+      { id: "teams", icon: "./Groups.png", label: "Teams" },
+      { id: "analytics", icon: "./Pie_chart.png", label: "Analytics" },
+      { id: "messages", icon: "./Chat.png", label: "Messages" },
+      { id: "integrations", icon: "./Code.png", label: "Integrations" },
+    ];
+  
     return (
       <div className="p-5 border-r border-gray-300">
         <img src="./logo.png" alt="Logo" />
-        
-        <div className="flex gap-3 px-3 py-1.5 rounded mt-5">
-          <img src="./Squares_four_1.png" alt="Dashboard" />
-          <p className="ml-3">Dashboard</p>
-        </div>
   
-        <div className="flex gap-3 px-3 py-1.5 rounded mt-3">
-          <img src="./Folder.png" alt="Projects" />
-          <p className="ml-3">Projects</p>
-        </div>
-  
-        <div className="flex gap-3 px-3 py-1.5 rounded mt-3">
-          <img src="./Groups.png" alt="Teams" />
-          <p className="ml-3">Teams</p>
-        </div>
-  
-        <div className="flex gap-3 px-3 py-1.5 rounded mt-3">
-          <img src="./Pie_chart.png" alt="Analytics" />
-          <p className="ml-3">Analytics</p>
-        </div>
-  
-        <div className="flex gap-3 px-3 py-1.5 rounded mt-3">
-          <img src="./Chat.png" alt="Messages" />
-          <p className="ml-3">Messages</p>
-        </div>
-  
-        <div className="flex gap-3 px-3 py-1.5 rounded mt-3">
-          <img src="./Code.png" alt="Integrations" />
-          <p className="ml-3">Integrations</p>
-        </div>
+        {menuItems.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => setActivePage(item.id)}
+            className={`flex gap-3 px-3 py-1.5 rounded mt-3 cursor-pointer transition-all duration-200 ${
+              activePage === item.id
+                ? "bg-blue-100 text-blue-700 font-semibold"
+                : "hover:bg-gray-100"
+            }`}
+          >
+            <img src={item.icon} alt={item.label} />
+            <p className="ml-3">{item.label}</p>
+          </div>
+        ))}
   
         <div className="mt-10 bg-[#EFF6FF] p-5 flex flex-col gap-5 items-center">
           <img src="./Group.png" alt="Update Notice" />
