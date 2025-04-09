@@ -1,20 +1,21 @@
-import React from "react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
-    const overview = {
-        turnover: 1234567,
-        turnoverChange: 5.6,
-        turnoverImg: "./giohang.png",
+    const [overview, setOverview] = useState(null);
 
-        profit: 789012,
-        profitChange: 3.2,
-        profitImg: "./dola.png",
+    useEffect(() => {
+        const fetchOverview = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/overview");
+                const data = await response.json();
+                setOverview(data);
+            } catch (error) {
+                console.error("Lỗi khi fetch du lieu:", error);
+            }
+        };
 
-        newCustomer: 320,
-        customerChange: 2.5,
-        customerImg: "./user.png"
-    };
-
+        fetchOverview();
+    }, []);
     return (
         <>
             <div className="flex justify-between p-5 border-b border-gray-300">
@@ -46,37 +47,40 @@ const Header = () => {
                     <div className="flex flex-col gap-2 ml-3 w-35">
                         <p className="text-lg font-medium">Turnover</p>
                         <p className="text-3xl font-bold">
-                            ${overview.turnover.toLocaleString()}
+                            ${overview?.turnover?.toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-500 whitespace-nowrap">
-                            <span className="text-green-700 font-bold">{overview.turnoverChange}%</span> period of change
+                            <span className="text-green-700 font-bold">{overview?.turnoverChange}%</span> period of change
                         </p>
+
                     </div>
-                    <img src={overview.turnoverImg} alt="Turnover" />
+                    <img src={overview?.turnoverImg} alt="Turnover" />
                 </div>
 
                 <div className="flex items-start gap-30 p-5 bg-[#EFF6FF] rounded-md">
                     <div className="flex flex-col gap-2 ml-3 w-35">
                         <p className="text-lg font-medium">Profit</p>
                         <p className="text-3xl font-bold">
-                            ${overview.profit.toLocaleString()}
+                            ${overview?.profit?.toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-500 whitespace-nowrap">
-                            <span className="text-green-700 font-bold">{overview.profitChange}%</span> period of change
+                            <span className="text-green-700 font-bold">{overview?.profitChange}%</span>{" "}
+                            period of change
                         </p>
                     </div>
-                    <img src={overview.profitImg} alt="Profit" />
+
+                    <img src={overview?.profitImg} alt="Profit" />
                 </div>
 
                 <div className="flex items-start gap-30 p-5 bg-[#F0F7FD] rounded-md">
                     <div className="flex flex-col gap-2 ml-3 w-35">
                         <p className="text-lg font-medium">New customer</p>
-                        <p className="text-3xl font-bold">{overview.newCustomer}</p>
+                        <p className="text-3xl font-bold">{overview?.newCustomer}</p>
                         <p className="text-sm text-gray-500 whitespace-nowrap">
-                            <span className="text-green-700 font-bold">{overview.customerChange}%</span> period of change
+                            <span className="text-green-700 font-bold">{overview?.customerChange}%</span> period of change
                         </p>
                     </div>
-                    <img src={overview.customerImg} alt="New customer" />
+                    <img src={overview?.customerImg} alt="New customer" />
                 </div>
             </div>
         </>
