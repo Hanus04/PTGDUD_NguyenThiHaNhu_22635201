@@ -66,6 +66,14 @@
       "orderValue": 13000,
       "orderDate": "13/8/2025",
       "status": "Completed"
+    },
+    {
+      "id": "7790",
+      "customerName": "Hà Như",
+      "company": "ViNa",
+      "orderValue": 15000,
+      "orderDate": "4/9/2025",
+      "status": "New"
     }
   ]
 }

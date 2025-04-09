@@ -46,7 +46,7 @@ const Header = () => {
                 <div className="flex items-start gap-30 p-5 bg-[#FFF0F5] rounded-md">
                     <div className="flex flex-col gap-2 ml-3 w-35">
                         <p className="text-lg font-medium">Turnover</p>
-s                        <p className="text-3xl font-bold">
+                        <p className="text-3xl font-bold">
                             ${overview?.turnover?.toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-500 whitespace-nowrap">
