@@ -67,8 +67,9 @@ const OrderDetail = () => {
           <thead>
             <tr className="text-gray-500">
               <td className="p-3">
-                <input type="checkbox" />
+                <input type="checkbox" className="w-3 h-3 accent-pink-600" />
               </td>
+
               <td className="px-4 py-3 font-bold">CUSTOMER NAME</td>
               <td className="px-4 py-3 font-bold">COMPANY</td>
               <td className="px-4 py-3 font-bold">ORDER VALUE</td>
@@ -81,8 +82,9 @@ const OrderDetail = () => {
             {currentItems.map((item, index) => (
               <tr key={index}>
                 <td className="p-3">
-                  <input type="checkbox" />
-                </td>
+                <input type="checkbox" className="w-3 h-3 accent-pink-600" />
+              </td>
+
                 <td className="px-4 py-3 font-medium">{item.customerName}</td>
                 <td className="px-4 py-3">{item.company}</td>
                 <td className="px-4 py-3">${item.orderValue}</td>
@@ -109,20 +111,20 @@ const OrderDetail = () => {
         </table>
       </div>
       <div className="mt-5 flex flex-col items-center justify-center gap-2">
-       
+
         <div className="flex items-center space-x-2">
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
             className={`px-3 py-1 rounded-md border text-sm font-medium ${currentPage === 1
-                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                : "hover:bg-gray-100 text-gray-700 border-gray-300"
+              ? "text-gray-400 border-gray-300 cursor-not-allowed"
+              : "hover:bg-gray-100 text-gray-700 border-gray-300"
               }`}
           >
             <ChevronLeft size={18} />
           </button>
 
-        
+
           {[...Array(totalPages)].map((_, index) => {
             const page = index + 1;
             return (
@@ -130,8 +132,8 @@ const OrderDetail = () => {
                 key={page}
                 onClick={() => paginate(page)}
                 className={`px-3 py-1 rounded-md text-sm font-medium border transition-all duration-200 ${page === currentPage
-                    ? "bg-[#E64F84] text-white border-[#E64F84]"
-                    : "text-gray-700 hover:bg-gray-100 border-gray-300"
+                  ? "bg-[#E64F84] text-white border-[#E64F84]"
+                  : "text-gray-700 hover:bg-gray-100 border-gray-300"
                   }`}
               >
                 {page}
@@ -143,13 +145,13 @@ const OrderDetail = () => {
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
             className={`px-3 py-1 rounded-md border text-sm font-medium ${currentPage === totalPages
-                ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                : "hover:bg-gray-100 text-gray-700 border-gray-300"
+              ? "text-gray-400 border-gray-300 cursor-not-allowed"
+              : "hover:bg-gray-100 text-gray-700 border-gray-300"
               }`}
           >
             <ChevronRight size={18} />
           </button>
-          
+
         </div>
         <p className="text-sm text-gray-600">
           {orders.length} results — Page {currentPage} of {totalPages}

@@ -31,7 +31,7 @@ const Menu = () => {
       <div className="mt-20 bg-[#EFF6FF] p-5 flex flex-col gap-5 items-center">
         <img src="./Group.png" alt="Update Notice" />
         <p className="font-medium text-2xl">V2.0 is available</p>
-        <button className="bg-white text-blue-700 border border-blue-700 px-3 py-1.5 w-full rounded hover:bg-blue-700 hover:text-white transition-all duration-300">
+        <button className="bg-white text-pink-700 border border-pink-700 px-3 py-1.5 w-full rounded hover:bg-pink-700 hover:text-white transition-all duration-300">
           Try now
         </button>
       </div>
