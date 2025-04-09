@@ -1,44 +1,34 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./component/Header";
 import Menu from "./component/Menu";
 
-import Dashboard from "./component/OrderTable";
 import Projects from "./pages/Projects";
 import Teams from "./pages/Teams";
 import Analytics from "./pages/Analytics";
 import Messages from "./pages/Messages";
 import Integrations from "./pages/Integrations";
+import Dashboard from "./component/OrderTable";
 
 const App = () => {
-  const [activePage, setActivePage] = useState("dashboard");
-
-  const renderPage = () => {
-    switch (activePage) {
-      case "projects":
-        return <Projects />;
-      case "teams":
-        return <Teams />;
-      case "analytics":
-        return <Analytics />;
-      case "messages":
-        return <Messages />;
-      case "integrations":
-        return <Integrations />;
-      default:
-        return <Dashboard />;
-    }
-  };
-
   return (
-    <div className="grid grid-cols-[2fr_8fr] min-h-screen">
-      <div>
-        <Menu activePage={activePage} setActivePage={setActivePage} />
+    <Router>
+      <div className="grid grid-cols-[2fr_8fr]">
+        <div>
+          <Menu />
+        </div>
+        <div>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/teams" element={<Teams />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/integrations" element={<Integrations />} />
+          </Routes>
+        </div>
       </div>
-      <div>
-        <Header />
-        {renderPage()}
-      </div>
-    </div>
+    </Router>
   );
 };
 
