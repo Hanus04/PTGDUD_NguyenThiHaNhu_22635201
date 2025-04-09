@@ -1,22 +1,55 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const EditDetail = ({ isOpen, onClose }) => {
+const EditDetail = ({ fetchOrderData, id, isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
   const [orderValue, setOrderValue] = useState(0);
   const [orderDate, setOrderDate] = useState("");
   const [status, setStatus] = useState("");
+  const [order, setOrder] = useState(null);
 
-  const handleSubmit = () => {
-    console.log("Updated order:", {
-      customerName: name,
-      company,
-      orderValue,
-      orderDate,
-      status,
+  const fetchGetOrder = async () => {
+    await fetch(`http://localhost:3001/orders/${id}`)
+      .then((response) => response.json())
+      .then((data) => setOrder(data));
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchGetOrder();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (order) {
+      setName(order.customerName || "");
+      setCompany(order.company || "");
+      setOrderValue(order.orderValue || 0);
+      setOrderDate(order.orderDate || "");
+      setStatus(order.status || "");
+    }
+  }, [order]);
+
+  const handleEditUser = async () => {
+    const response = await fetch(`http://localhost:3001/orders/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...order,
+        customerName: name,
+        company,
+        orderValue: Number(orderValue),
+        status,
+      }),
     });
 
-    alert("Thông tin đã được ghi nhận");
+    if (response.ok) {
+      alert("Cập nhật thành công!")
+      fetchOrderData()
+    }
+    else {
+      alert("Không thể cập nhật!")
+    }
     onClose();
   };
 
@@ -39,7 +72,7 @@ const EditDetail = ({ isOpen, onClose }) => {
           <h2 className="text-2xl font-semibold mb-6">Update Orders</h2>
         </div>
         <div>
-          <label>Customer Name</label>
+          <label htmlFor="">Customer Name</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -49,7 +82,7 @@ const EditDetail = ({ isOpen, onClose }) => {
           />
         </div>
         <div>
-          <label>Company</label>
+          <label htmlFor="">Company</label>
           <input
             value={company}
             onChange={(e) => setCompany(e.target.value)}
@@ -59,7 +92,7 @@ const EditDetail = ({ isOpen, onClose }) => {
           />
         </div>
         <div>
-          <label>Order Value</label>
+          <label htmlFor="">Order Value</label>
           <input
             value={orderValue}
             onChange={(e) => setOrderValue(Number(e.target.value))}
@@ -70,23 +103,19 @@ const EditDetail = ({ isOpen, onClose }) => {
         </div>
 
         <div>
-          <label>Order Date</label>
-          <input
-            value={orderDate}
-            onChange={(e) => setOrderDate(e.target.value)}
-            type="date"
-            className="border border-gray-300 px-3 py-2 w-full mb-4 rounded"
-          />
+          <label htmlFor="">Order Date</label>
+          <p className="border border-gray-300 px-3 py-2 w-full mb-4 rounded">
+            {orderDate || "N/A"}
+          </p>
         </div>
 
         <div>
-          <label>Status</label>
+          <label htmlFor="">Status</label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
             className="border border-gray-300 px-3 py-2 w-full mb-4 rounded"
           >
-            <option value="">-- Chọn trạng thái --</option>
             <option value="New">New</option>
             <option value="In-progress">In-progress</option>
             <option value="Completed">Completed</option>
@@ -101,10 +130,10 @@ const EditDetail = ({ isOpen, onClose }) => {
             Đóng
           </button>
           <button
-            onClick={handleSubmit}
+            onClick={handleEditUser}
             className="px-4 py-2 rounded bg-[#E64F84] text-white hover:bg-[#ff1491]"
           >
-            Ghi nhận
+            Cập nhật
           </button>
         </div>
       </div>
