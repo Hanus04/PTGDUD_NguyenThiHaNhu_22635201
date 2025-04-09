@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import EditDetail from "../component/EditDetail";
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
@@ -48,7 +49,7 @@ const OrderTable = () => {
         </div>
         <div className="flex gap-5">
           <button
-            onClick={() => setIsModalOpen(true)}
+          
             className="cursor-pointer flex items-center gap-3 px-3 py-1.5 text-[#E64F84] border border-[#E64F84] rounded-md"
           >
             <img src={"./Download.png"} alt="Download" />
@@ -154,6 +155,14 @@ const OrderTable = () => {
         </p>
       </div>
 
+      {editModal && selectedOrderId !== null && (
+        <EditDetail
+          fetchOrderData={fetchOrderData}
+          id={selectedOrderId}
+          isOpen={editModal}
+          onClose={() => setEditModal(false)}
+        />
+      )}
     </div>
   );
 };
