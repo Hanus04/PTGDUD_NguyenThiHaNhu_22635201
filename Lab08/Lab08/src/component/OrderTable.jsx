@@ -1,121 +1,159 @@
-import React from "react";
-
-const orders = [
-  {
-    id: "1",
-    customerName: "Elizabeth Lee",
-    company: "AvatarSystems",
-    orderValue: 359,
-    orderDate: "10/07/2023",
-    status: "New",
-  },
-  {
-    id: "2",
-    customerName: "Carlos Garcia",
-    company: "SmoozeShift",
-    orderValue: 747,
-    orderDate: "24/07/2023",
-    status: "New",
-  },
-  {
-    id: "3",
-    customerName: "Elizabeth Bailey",
-    company: "Prime Time Telecom",
-    orderValue: 564,
-    orderDate: "08/08/2023",
-    status: "In-progress",
-  },
-  {
-    id: "4",
-    customerName: "Ryan Brown",
-    company: "OmniTech Corporation",
-    orderValue: 541,
-    orderDate: "31/08/2023",
-    status: "In-progress",
-  },
-  {
-    id: "5",
-    customerName: "Ryan Young",
-    company: "DataStream Inc.",
-    orderValue: 769,
-    orderDate: "01/05/2023",
-    status: "Completed",
-  },
-  {
-    id: "6",
-    customerName: "Hailey Adams",
-    company: "FlowRush",
-    orderValue: 922,
-    orderDate: "10/06/2023",
-    status: "Completed",
-  },
-  {
-    id: "7",
-    customerName: "Hà Như",
-    company: "Hanus",
-    orderValue: 13000,
-    orderDate: "13/8/2025",
-    status: "Completed",
-  },
-  {
-    id: "8",
-    customerName: "Hà Như",
-    company: "ViNa",
-    orderValue: 15000,
-    orderDate: "4/9/2025",
-    status: "New",
-  },
-];
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case "New":
-      return "bg-yellow-100 text-yellow-800";
-    case "In-progress":
-      return "bg-blue-100 text-blue-800";
-    case "Completed":
-      return "bg-green-100 text-green-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const OrderTable = () => {
+  const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 6;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const fetchOrderData = async () => {
+    fetch("http://localhost:3001/orders")
+      .then((response) => response.json())
+      .then((data) => setOrders(data));
+  };
+
+  const itemStatus = (status) => {
+    if (status === "New") return "text-blue-700 bg-blue-100";
+    else if (status === "In-progress") return "text-yellow-700 bg-yellow-100";
+    else return "text-green-700 bg-green-100";
+  };
+
+  useEffect(() => {
+    fetchOrderData();
+  }, []);
+
+  const totalPages = Math.ceil(orders.length / itemPerPage);
+
+  const indexOfLastItem = currentPage * itemPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemPerPage;
+  const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleEditClick = (id) => {
+    setSelectedOrderId(id);
+    setEditModal(true);
+  };
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="bg-white rounded-xl shadow-xl p-6">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Orders Overview</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border border-gray-200">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">ID</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Customer Name</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Company</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Order Value</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Order Date</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Status</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 border-b">
-                  <td className="px-4 py-3">{order.id}</td>
-                  <td className="px-4 py-3">{order.customerName}</td>
-                  <td className="px-4 py-3">{order.company}</td>
-                  <td className="px-4 py-3">${order.orderValue.toLocaleString()}</td>
-                  <td className="px-4 py-3">{order.orderDate}</td>
-                  <td className="px-4 py-3">
-                    <span className={`px-3 py-1 text-sm rounded-full font-semibold ${getStatusColor(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="p-5">
+      <div className="flex justify-between">
+        <div className="text-2xl font-bold flex gap-4 w-80">
+          <img src={"./File_text_1.png"} alt="File_text_1" />
+          <p>Detailed report</p>
+        </div>
+        <div className="flex gap-5">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="cursor-pointer flex items-center gap-3 px-3 py-1.5 text-[#E64F84] border border-[#E64F84] rounded-md"
+          >
+            <img src={"./Download.png"} alt="Download" />
+            <p>Import</p>
+          </button>
+          <button className="flex items-center gap-3 px-3 py-1.5 cursor-pointer text-[#E64F84] border border-[#E64F84] rounded-md">
+            <img src={"./Move_up.png"} alt="Move_up" />
+            <p>Export</p>
+          </button>
         </div>
       </div>
+      <div className="mt-7">
+        <table className="min-w-full border border-gray-300 rounded-sm border-separate">
+          <thead>
+            <tr className="text-gray-500">
+              <td className="p-3">
+                <input type="checkbox" />
+              </td>
+              <td className="px-4 py-3 font-bold">CUSTOMER NAME</td>
+              <td className="px-4 py-3 font-bold">COMPANY</td>
+              <td className="px-4 py-3 font-bold">ORDER VALUE</td>
+              <td className="px-4 py-3 font-bold">ORDER DATE</td>
+              <td className="px-4 py-3 font-bold">STATUS</td>
+              <td className="px-4 py-3 font-bold"></td>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((item, index) => (
+              <tr key={index}>
+                <td className="p-3">
+                  <input type="checkbox" />
+                </td>
+                <td className="px-4 py-3 font-medium">{item.customerName}</td>
+                <td className="px-4 py-3">{item.company}</td>
+                <td className="px-4 py-3">${item.orderValue}</td>
+                <td className="px-4 py-3 text-gray-400">{item.orderDate}</td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`px-2.5 py-1.5 rounded-xl text-xs font-medium ${itemStatus(
+                      item.status
+                    )}`}
+                  >
+                    {item.status}
+                  </span>
+                </td>
+                <td className="px-4 py-3 cursor-pointer">
+                  <img
+                    onClick={() => handleEditClick(item.id)}
+                    src={"./create.png"}
+                    alt="create"
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-5 flex flex-col items-center justify-center gap-2">
+       
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded-md border text-sm font-medium ${currentPage === 1
+                ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                : "hover:bg-gray-100 text-gray-700 border-gray-300"
+              }`}
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+        
+          {[...Array(totalPages)].map((_, index) => {
+            const page = index + 1;
+            return (
+              <button
+                key={page}
+                onClick={() => paginate(page)}
+                className={`px-3 py-1 rounded-md text-sm font-medium border transition-all duration-200 ${page === currentPage
+                    ? "bg-[#E64F84] text-white border-[#E64F84]"
+                    : "text-gray-700 hover:bg-gray-100 border-gray-300"
+                  }`}
+              >
+                {page}
+              </button>
+            );
+          })}
+
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded-md border text-sm font-medium ${currentPage === totalPages
+                ? "text-gray-400 border-gray-300 cursor-not-allowed"
+                : "hover:bg-gray-100 text-gray-700 border-gray-300"
+              }`}
+          >
+            <ChevronRight size={18} />
+          </button>
+          
+        </div>
+        <p className="text-sm text-gray-600">
+          {orders.length} results — Page {currentPage} of {totalPages}
+        </p>
+      </div>
+
     </div>
   );
 };

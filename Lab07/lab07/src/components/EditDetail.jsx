@@ -1,145 +1,144 @@
-import React, { useState } from "react";
-import EditDetail from "./EditDetail";
+import { useEffect, useState } from "react";
 
-const ordersData = [
-  {
-    id: "1",
-    customerName: "Elizabeth Lee",
-    company: "AvatarSystems",
-    orderValue: 359,
-    orderDate: "10/07/2023",
-    status: "New",
-  },
-  {
-    id: "2",
-    customerName: "Carlos Garcia",
-    company: "SmoozeShift",
-    orderValue: 747,
-    orderDate: "24/07/2023",
-    status: "New",
-  },
-  {
-    id: "3",
-    customerName: "Elizabeth Bailey",
-    company: "Prime Time Telecom",
-    orderValue: 564,
-    orderDate: "08/08/2023",
-    status: "In-progress",
-  },
-  {
-    id: "4",
-    customerName: "Ryan Brown",
-    company: "OmniTech Corporation",
-    orderValue: 541,
-    orderDate: "31/08/2023",
-    status: "In-progress",
-  },
-  {
-    id: "5",
-    customerName: "Ryan Young",
-    company: "DataStream Inc.",
-    orderValue: 769,
-    orderDate: "01/05/2023",
-    status: "Completed",
-  },
-  {
-    id: "6",
-    customerName: "Hailey Adams",
-    company: "FlowRush",
-    orderValue: 922,
-    orderDate: "10/06/2023",
-    status: "Completed",
-  },
-];
+const EditDetail = ({ fetchOrderData, id, isOpen, onClose }) => {
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
+  const [orderValue, setOrderValue] = useState(0);
+  const [orderDate, setOrderDate] = useState("");
+  const [status, setStatus] = useState("");
+  const [order, setOrder] = useState(null);
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "New":
-      return "bg-yellow-100 text-yellow-800";
-    case "In-progress":
-      return "bg-blue-100 text-blue-800";
-    case "Completed":
-      return "bg-green-100 text-green-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-
-const OrderTable = () => {
-  const [orders, setOrders] = useState(ordersData);
-  const [selectedId, setSelectedId] = useState(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
-  const openEdit = (id) => {
-    setSelectedId(id);
-    setIsEditOpen(true);
+  const fetchGetOrder = async () => {
+    await fetch(`http://localhost:3001/orders/${id}`)
+      .then((response) => response.json())
+      .then((data) => setOrder(data));
   };
 
-  const closeEdit = () => {
-    setIsEditOpen(false);
+  useEffect(() => {
+    if (id) {
+      fetchGetOrder();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (order) {
+      setName(order.customerName || "");
+      setCompany(order.company || "");
+      setOrderValue(order.orderValue || 0);
+      setOrderDate(order.orderDate || "");
+      setStatus(order.status || "");
+    }
+  }, [order]);
+
+  const handleEditUser = async () => {
+    const response = await fetch(`http://localhost:3001/orders/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...order,
+        customerName: name,
+        company,
+        orderValue: Number(orderValue),
+        status,
+      }),
+    });
+
+    if (response.ok) {
+      alert("Cập nhật thành công!")
+      fetchOrderData()
+    }
+    else {
+      alert("Không thể cập nhật!")
+    }
+    onClose();
   };
 
-  const fetchOrderData = async () => {
-    const res = await fetch("http://localhost:3001/orders");
-    const data = await res.json();
-    setOrders(data);
+  const handleOverlayClick = (e) => {
+    if (e.target.id === "modalOverlay") {
+      onClose();
+    }
   };
+
+  if (!isOpen) return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="bg-white rounded-xl p-6 w-full shadow-xl">
+    <div
+      id="modalOverlay"
+      onClick={handleOverlayClick}
+      className="fixed inset-0 bg-white/20 backdrop-blur-xs flex items-center justify-center z-50"
+    >
+      <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-6">Orders Overview</h2>
+          <h2 className="text-2xl font-semibold mb-6">Update Orders</h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border border-gray-200">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">ID</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Customer Name</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Company</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Order Value</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Order Date</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-700">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700">
-              {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 border-b">
-                  <td className="px-4 py-3">{order.id}</td>
-                  <td className="px-4 py-3">{order.customerName}</td>
-                  <td className="px-4 py-3">{order.company}</td>
-                  <td className="px-4 py-3">${order.orderValue.toLocaleString()}</td>
-                  <td className="px-4 py-3">{order.orderDate}</td>
-                  <td className="px-4 py-3">
-                    <span className={`px-3 py-1 text-sm rounded-full font-semibold ${getStatusColor(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => openEdit(order.id)}
-                      className="px-3 py-1 rounded bg-[#E64F84] text-white hover:bg-[#ff1491]"
-                    >
-                      Sửa
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div>
+          <label htmlFor="">Customer Name</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            placeholder="customerName..."
+            className="border border-gray-300 px-3 py-2 w-full mb-4 rounded"
+          />
+        </div>
+        <div>
+          <label htmlFor="">Company</label>
+          <input
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+            type="text"
+            placeholder="company..."
+            className="border border-gray-300 px-3 py-2 w-full mb-4 rounded"
+          />
+        </div>
+        <div>
+          <label htmlFor="">Order Value</label>
+          <input
+            value={orderValue}
+            onChange={(e) => setOrderValue(Number(e.target.value))}
+            type="number"
+            placeholder="orderValue..."
+            className="border border-gray-300 px-3 py-2 w-full mb-4 rounded"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="">Order Date</label>
+          <p className="border border-gray-300 px-3 py-2 w-full mb-4 rounded">
+            {orderDate || "N/A"}
+          </p>
+        </div>
+
+        <div>
+          <label htmlFor="">Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="border border-gray-300 px-3 py-2 w-full mb-4 rounded"
+          >
+            <option value="New">New</option>
+            <option value="In-progress">In-progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div className="flex justify-end gap-3 mt-4">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+          >
+            Đóng
+          </button>
+          <button
+            onClick={handleEditUser}
+            className="px-4 py-2 rounded bg-[#E64F84] text-white hover:bg-[#ff1491]"
+          >
+            Cập nhật
+          </button>
         </div>
       </div>
-
-      <EditDetail
-        id={selectedId}
-        isOpen={isEditOpen}
-        onClose={closeEdit}
-        fetchOrderData={fetchOrderData}
-      />
     </div>
   );
 };
 
-export default OrderTable;
+export default EditDetail;
